@@ -2,6 +2,11 @@
 
 GitHub Actions is a continuous integration and continuous delivery (CI/CD) platform that allows you to automate your build, test, and deployment pipeline. You can create workflows that run tests whenever you push a change to your repository, or that deploy merged pull requests to production.
 
+## Advantages of using github actions
+* Strengths that keep teams on Actions
+* Low friction for GitHub-hosted code: Pipelines live alongside your code; creating a workflow is as simple as committing a YAML file under .github/workflows/.
+* Vibrant marketplace: Thousands of community-maintained actions help you automate everything from dependency caching to cloud deployments without re-writing common logic.
+
 ## Workflow
 
 ### Creating an example workflow
