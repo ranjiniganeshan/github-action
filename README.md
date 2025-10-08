@@ -82,5 +82,37 @@ The run keyword tells the job to execute a command on the runner. In this case, 
       - run: bats -v
 Finally, you'll run the bats command with a parameter that outputs the software version.
 
-Visualizing the workflow file
-In this diagram, you can see the workflow file you just created and how the GitHub Actions components are organized in a hierarchy. Each step executes a single action or shell script. Steps 1 and 2 run actions, while steps 3 and 4 run shell scripts. To find more prebuilt actions for your workflows, see Using pre-written building blocks in your workflow.
+## Jobs, dependencies, and triggers
+
+### cordinating multiple jobs
+
+```
+jobs:
+  job-1:
+    runs-on: ubuntu-24.04
+    steps:
+      - run: echo "A job consists of"
+      - run: echo "one or more steps"
+      - run: echo "which run sequentially"
+      - run: echo "within the same compute environment"
+  job-2:
+    runs-on: ubuntu-24.04
+    steps:
+      - run: echo "Multiple jobs can run in parallel"
+  job-3:
+    runs-on: ubuntu-24.04
+    needs:
+      - job-1
+      - job-2
+    steps:
+      - run: echo "They can also depend on one another..."
+  job-4:
+    runs-on: ubuntu-24.04
+    needs:
+      - job-2
+      - job-3
+    steps:
+      - run: echo "...to form a directed acyclic graph (DAG)"
+```
+
+
