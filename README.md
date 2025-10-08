@@ -246,7 +246,7 @@ This workflow shows how environment variable scopes work in GitHub Actions:
 
 ```
 
-ame: Passing Variables Between jobs
+name: Passing Variables Between jobs
 on:
   workflow_dispatch:
 
