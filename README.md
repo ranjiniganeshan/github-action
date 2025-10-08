@@ -179,6 +179,16 @@ jobs:
 
 ```
 
+This workflow runs automatically based on certain GitHub events:
+
+* push → triggers only when code is pushed to branches matching example-branch/*.
+
+* pull_request → runs when a PR is opened, updated, or reopened — but only if it changes .md files (and skips .txt files).
+
+* workflow_dispatch → allows manual execution from the GitHub Actions UI.
+
+* When triggered, it runs one job (echo-event) that simply prints the event details (JSON payload) to the console.
+
 
 
 
