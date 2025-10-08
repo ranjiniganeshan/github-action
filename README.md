@@ -230,5 +230,14 @@ jobs:
 
 ```
 
+This workflow shows how environment variable scopes work in GitHub Actions:
+
+* WORKFLOW_VAR is available to all jobs and steps.
+
+* JOB_VAR is only available within job-1.
+
+* STEP_VAR is available only in the specific step where it’s defined.
+* Each step echoes which variables are visible to show the scope differences.
+
 
 
