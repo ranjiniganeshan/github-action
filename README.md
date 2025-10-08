@@ -284,6 +284,18 @@ jobs:
 
 ```
 
+This workflow demonstrates how to pass data between jobs in GitHub Actions:
+
+* The producer job creates a variable foo=bar.
+
+* It saves it as a step output ($GITHUB_OUTPUT) so it can be shared with other jobs.
+
+* It also sets it as a job environment variable ($GITHUB_ENV), available only within that job.
+
+* The consumer job runs after the producer (needs: producer) and accesses the foo value through ${{ needs.producer.outputs.foo }}.
+
+* Regular environment variables like FOO don’t persist between jobs.
+
 
 
 
