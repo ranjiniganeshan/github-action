@@ -86,7 +86,13 @@ Finally, you'll run the bats command with a parameter that outputs the software 
 
 ### cordinating multiple jobs
 
+1. create a file called  multiple-workflows-jobs-steps.yaml in folder github/workflows/
+
 ```
+name: Workflows, Jobs, and Steps
+
+on:
+  workflow_dispatch:
 jobs:
   job-1:
     runs-on: ubuntu-24.04
@@ -114,5 +120,8 @@ jobs:
     steps:
       - run: echo "...to form a directed acyclic graph (DAG)"
 ```
+
+
+
 
 
