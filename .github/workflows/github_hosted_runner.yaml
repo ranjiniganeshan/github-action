@@ -1,0 +1,12 @@
+name: GitHub Hosted Runner Demo
+on: workflow_dispatch
+
+jobs:
+  github-hosted:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show environment info
+        run: |
+          echo "Running on a GitHub-hosted Ubuntu machine"
+          uname -a
+          df -h
