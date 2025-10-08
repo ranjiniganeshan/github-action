@@ -342,6 +342,61 @@ jobs:
           echo "Env variable:            $EXAMPLE_ENVIRONMENT_VARIABLE"
 ```
 
+### How to Add Secrets and Variables ** 
+
+* Go to your GitHub repository → click on Settings.
+
+* On the left panel, under Security, select Secrets and variables → Actions.
+
+* You’ll see two tabs:
+
+* Secrets → For sensitive data (like API keys, passwords).
+
+* Variables → For non-sensitive config values (like environment names, versions).
+
+* Add Repository-Level Secrets/Variables:
+
+* Click New repository secret or New repository variable.
+
+### Example:
+
+* Secret name: EXAMPLE_REPOSITORY_SECRET
+
+* Variable name: EXAMPLE_REPOSITORY_VARIABLE
+
+* Add Environment-Level Secrets/Variables: 
+
+* Under Environments → create environments like staging and production.
+
+* Inside each environment, add:
+
+* Secret: EXAMPLE_ENVIRONMENT_SECRET
+
+* Variable: EXAMPLE_ENVIRONMENT_VARIABLE
+
+** How the Workflow Works ** 
+
+## The workflow has two jobs: 
+
+* staging-environment (uses environment staging)
+
+* production-environment (uses environment production)
+
+Each job defines environment variables (env:) that reference secrets and variables using:
+
+${{ secrets.SECRET_NAME }}
+${{ vars.VARIABLE_NAME }}
+
+
+During runtime:
+
+GitHub injects the appropriate repository-level and environment-level secrets/variables into the job’s shell.
+
+The secrets’ actual values are masked in logs (you’ll see *** instead of the real value).
+
+Variables are printed normally.
+
+Finally, each job prints the injected values to show the difference between repository- and environment-level configurations.
 
 
 
