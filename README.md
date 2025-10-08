@@ -121,6 +121,16 @@ jobs:
       - run: echo "...to form a directed acyclic graph (DAG)"
 ```
 
+The workflow runs manually (workflow_dispatch).
+
+* Each job runs on an Ubuntu runner (runs-on: ubuntu-24.04).
+
+* Steps are shell commands (run:) executed sequentially within a job.
+
+* Jobs (job-1, job-2, job-3, job-4) can run in parallel or depend on others using needs.
+
+* The dependencies (needs) form a directed acyclic graph (DAG) showing execution order.
+
 
 
 
