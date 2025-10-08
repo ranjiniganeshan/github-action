@@ -237,7 +237,53 @@ This workflow shows how environment variable scopes work in GitHub Actions:
 * JOB_VAR is only available within job-1.
 
 * STEP_VAR is available only in the specific step where it’s defined.
+  
 * Each step echoes which variables are visible to show the scope differences.
+
+## Passing data between steps and jobs
+
+1. create a file called passing-data.yaml in github/workflows/
+
+```
+
+ame: Passing Variables Between jobs
+on:
+  workflow_dispatch:
+
+jobs:
+  producer:
+    runs-on: ubuntu-24.04
+
+    outputs:
+      foo: ${{ steps.generate-foo.outputs.foo }}
+    steps:
+      - name: Generate and export foo
+        id: generate-foo
+        run: |
+          foo=bar
+
+          # 1) Step output (for job output)
+          echo "foo=${foo}" >> "$GITHUB_OUTPUT"
+
+          # 2) Job-scoped environment variable
+          echo "FOO=${foo}" >> "$GITHUB_ENV"
+
+      - name: Inspect values inside producer
+        run: |
+          echo "FOO (set via GITHUB_ENV):   $FOO"
+          echo "foo (step output):          ${{ steps.generate-foo.outputs.foo }}"
+
+  consumer:
+    runs-on: ubuntu-24.04
+    needs: producer
+    steps:
+      - name: Inspect values inside consumer (note FOO is unset)
+        run: |
+          echo "Value from producer:        ${{ needs.producer.outputs.foo }}"
+          echo "FOO in consumer:            ${FOO:-<UNSET>}"
+
+```
+
 
 
 
