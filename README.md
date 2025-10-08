@@ -398,5 +398,66 @@ Variables are printed normally.
 
 Finally, each job prints the injected values to show the difference between repository- and environment-level configurations.
 
+## three main types of GitHub Action runners
+
+* GitHub-Hosted Runner
+
+1. create a workflow github_hosted_runner.yaml file in .github/workflows
+```
+name: GitHub Hosted Runner Demo
+on: workflow_dispatch
+
+jobs:
+  github-hosted:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show environment info
+        run: |
+          echo "Running on a GitHub-hosted Ubuntu machine"
+          uname -a
+          df -h
+```
+
+* Self-Hosted Runner
+
+These are your own machines (e.g., EC2, on-prem, or VM) that you connect to GitHub.
+You install the runner software and register it to your repo/org.
+1. create a file called self-hosted-runner.yaml within .github/workflows
+```
+name: Self Hosted Runner Demo
+on: workflow_dispatch
+
+jobs:
+  self-hosted:
+    runs-on: self-hosted
+    steps:
+      - run: echo "Running on a self-hosted runner (my own machine)"
+```
+#### Steps to add the self hosted runner
+
+*  Launch an EC2 Instance
+* Connect to the EC2 Instance and install the below tools
+```
+sudo apt update
+sudo apt install -y curl tar
+```
+* Register the Runner with GitHub
+Go to your repository in GitHub.
+
+Navigate to:
+Settings → Actions → Runners → New self-hosted runner → New runner
+
+Choose Linux and copy the commands GitHub provides — they look like this:
+
+
+<img width="794" height="541" alt="Screenshot 2025-10-08 at 8 57 06 PM" src="https://github.com/user-attachments/assets/6297cb37-8324-41e3-a9a3-19d9f15d4998" />
+
+
+
+
+
+<img width="1133" height="553" alt="Screenshot 2025-10-08 at 8 59 51 PM" src="https://github.com/user-attachments/assets/66057a00-e8dd-40e1-867c-372272424784" />
+
+<img width="466" height="403" alt="Screenshot 2025-10-08 at 9 00 24 PM" src="https://github.com/user-attachments/assets/6fdbd4f1-dba6-4fa7-a82c-0950066a495a" />
 
 
