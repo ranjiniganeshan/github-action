@@ -1,0 +1,8 @@
+name: Self Hosted Runner Demo
+on: workflow_dispatch
+
+jobs:
+  self-hosted:
+    runs-on: self-hosted
+    steps:
+      - run: echo "Running on a self-hosted runner (my own machine)"
