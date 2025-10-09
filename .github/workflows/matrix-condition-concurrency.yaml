@@ -48,4 +48,4 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Deploy app
-        run: echo "🚀 Deploying application from main branch..."
+        run: echo " Deploying application from main branch..."
