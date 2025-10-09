@@ -1,11 +1,12 @@
-name: GitHub Actions Permissions Example
+name: GitHub Actions Permissions 
 
 on:
-  pull_request:
+  workflow_dispatch:    # allows manual trigger from Actions tab
+  pull_request:         # still allows running on PR events
 
 permissions:
-  contents: read      # The workflow can only read repo content
-  pull-requests: write # Can post PR comments
+  contents: read
+  pull-requests: write
 
 jobs:
   comment:
@@ -22,5 +23,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: " Thanks for your pull request! The workflow ran successfully."
+              body: "Thanks for your pull request! The workflow ran successfully."
             })
