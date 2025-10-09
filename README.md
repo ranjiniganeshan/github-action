@@ -461,3 +461,64 @@ Choose Linux and copy the commands GitHub provides — they look like this:
 <img width="466" height="403" alt="Screenshot 2025-10-08 at 9 00 24 PM" src="https://github.com/user-attachments/assets/6fdbd4f1-dba6-4fa7-a82c-0950066a495a" />
 
 
+## Persisting build outputs with artifacts
+
+Artifacts are files shared between jobs or stored after workflow completion.
+
+They’re uploaded using the actions/upload-artifact action and downloaded using actions/download-artifact.
+
+
+1. create a file build-deploy-artifact.yaml
+
+```
+name: Artifacts Demo
+on: workflow_dispatch
+
+jobs:
+  # Job 1: Create and upload an artifact
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create a sample file
+        run: |
+          echo "Build output created on $(date)" > build-output.txt
+          echo "Artifact contains build results" >> build-output.txt
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifact
+          path: build-output.txt
+
+  # Job 2: Download and use the artifact
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifact
+
+      - name: Display artifact content
+        run: cat build-output.txt
+
+  # Job 3: Demonstrate artifact persistence after workflow
+  deploy:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Download artifact again
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifact
+
+      - name: Use artifact data
+        run: |
+          echo "Deploying using data from artifact..."
+          cat build-output.txt
+```
+
+
+
+
