@@ -1,23 +1,30 @@
-name: Caching Demo
-on: workflow_dispatch
+name: simple Cache
+
+on:
+  push:
+    branches: [ main ]
 
 jobs:
-  cache-demo:
+  build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Cache npm dependencies
+      - name: Restore node_modules cache
         uses: actions/cache@v4
         with:
-          path: ~/.npm               # folder to cache
-          key: ${{ runner.os }}-npm-${{ hashFiles('package-lock.json') }}
+          path: ~/.npm
+          key: npm-cache-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-npm-
+            npm-cache-
 
       - name: Install dependencies
         run: npm install
+        working-directory: ./  # adjust if package.json is in a subfolder
 
-      - name: Run build
+      - name: Build project
         run: npm run build
+        working-directory: ./  # adjust if needed
+
