@@ -1,30 +1,38 @@
-name: simple Cache
-
-on:
-  push:
-    branches: [ main ]
+name: Cache Demo
+on: workflow_dispatch
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-
+  actions-cache:
+    name: Prime demo cache
+    runs-on: ubuntu-24.04
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Restore node_modules cache
+      #  Try to restore existing cache
+      - name: Restore cache
+        id: demo-cache
         uses: actions/cache@v4
         with:
-          path: ~/.npm
-          key: npm-cache-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            npm-cache-
+          path: demo-cache
+          key: demo-cache-v1
 
-      - name: Install dependencies
-        run: npm install
-        working-directory: ./  # adjust if package.json is in a subfolder
+      # If cache not found, create and populate directory
+      - name: Populate cache directory
+        if: steps.demo-cache.outputs.cache-hit != 'true'
+        run: |
+          echo "Cache miss – generating contents"
+          mkdir -p demo-cache
+          date > demo-cache/timestamp.txt
 
-      - name: Build project
-        run: npm run build
-        working-directory: ./  # adjust if needed
+      #  Save the cache for future runs
+      - name: Save cache
+        if: steps.demo-cache.outputs.cache-hit != 'true'
+        uses: actions/cache@v4
+        with:
+          path: demo-cache
+          key: demo-cache-v1
+
+      #  Show cache status
+      - name: Verify cache status
+        run: |
+          echo "cache-hit? -> ${{ steps.demo-cache.outputs.cache-hit }}"
+          cat demo-cache/timestamp.txt
 
