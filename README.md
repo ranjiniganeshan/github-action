@@ -528,9 +528,9 @@ jobs:
 
 -  test job
 
-  * Waits for build (needs: build).
+   * Waits for build (needs: build).
 
-  * Downloads the same artifact and prints its contents.
+   * Downloads the same artifact and prints its contents.
 
 - deploy job
 
