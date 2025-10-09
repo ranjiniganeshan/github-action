@@ -545,6 +545,44 @@ GitHub → Actions → Run → Artifacts → build-artifact.zip
 
 ## Reusing work with caches
 
+simple caching
+
+1. create a workflow file called simple-caching.yaml in .github/workflows
+
+```
+name: Caching Demo
+on: workflow_dispatch
+
+jobs:
+  cache-demo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Cache npm dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm               # folder to cache
+          key: ${{ runner.os }}-npm-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run build
+        run: npm run build
+```
+details of the worflow
+* actions/cache saves files or folders (like ~/.npm) between workflow runs.
+
+* key uniquely identifies the cache (based on OS + lock file hash).
+
+* If the same key exists, the cache is restored, skipping fresh installs.
+
+* If not, it installs everything once and saves it for next time.
+
 
 
 
