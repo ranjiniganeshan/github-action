@@ -598,6 +598,54 @@ Step 3: The new data is saved to cache with the same key (demo-cache-v1).
 
 Step 4: On future runs, the cached data (timestamp) is restored instantly — showing reuse of previous work.
 
+## Controlling GitHub permissions
+1. create a file github-permissions.yaml in .github/workflows directory
 
 
+```
+name: GitHub Actions Permissions 
+
+on:
+  workflow_dispatch:    # allows manual trigger from Actions tab
+  pull_request:         # still allows running on PR events
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  comment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Add comment to PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: "Thanks for your pull request! The workflow ran successfully."
+            })
+
+```
+2. create a branch name test and checkin a test file.
+3. create a PR for main and test branch. Merge the PR.
+```
+permissions:
+  contents: read
+  pull-requests: write
+
+```
+* GitHub Actions runs with a GITHUB_TOKEN, which can have fine-grained permissions.
+    - This block defines what that token can do inside this workflow:
+
+        * contents: read → allows the workflow to read repository contents (needed for checkout and accessing files).
+
+        * pull-requests: write → allows the workflow to write to pull requests — such as posting comments or updating statuses.
+
+Without this, your script wouldn’t be able to create a PR comment.
 
