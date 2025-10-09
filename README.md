@@ -518,6 +518,33 @@ jobs:
           echo "Deploying using data from artifact..."
           cat build-output.txt
 ```
+##### How It Works
+
+- build job
+
+  * Creates a text file (build-output.txt).
+
+  * Uploads it as an artifact named build-artifact.
+
+-  test job
+
+  * Waits for build (needs: build).
+
+  * Downloads the same artifact and prints its contents.
+
+- deploy job
+
+  * Waits for test (needs: test).
+
+  * Downloads the artifact again and uses it (simulating a deployment).
+
+After the workflow completes, you’ll see the uploaded artifact under
+GitHub → Actions → Run → Artifacts → build-artifact.zip
+— you can download it manually anytime.
+
+
+## Reusing work with caches
+
 
 
 
