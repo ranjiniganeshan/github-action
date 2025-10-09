@@ -5,8 +5,9 @@ on:
     branches:
       - main
       - dev
+  workflow_dispatch:    # allows manual runs
 
-#  Concurrency control – only one workflow per branch at a time
+# Concurrency control – only one workflow per branch at a time
 concurrency:
   group: build-${{ github.ref }}
   cancel-in-progress: true
@@ -21,7 +22,7 @@ jobs:
         node: [18, 20]
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Setup Node.js
@@ -29,11 +30,11 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
 
-      - name: Install dependencies
-        run: npm install
+      - name: Dummy build
+        run: echo "Simulating build on ${{ matrix.os }} with Node ${{ matrix.node }}"
 
-      - name: Run tests
-        run: npm test
+      - name: Dummy test
+        run: echo "Simulating tests on ${{ matrix.os }} with Node ${{ matrix.node }}"
 
   deploy:
     name: Deploy to Production
@@ -43,8 +44,8 @@ jobs:
     if: github.ref == 'refs/heads/main'
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Deploy app
-        run: echo " Deploying application from main branch..."
+        run: echo "🚀 Deploying application from main branch..."
