@@ -550,39 +550,53 @@ simple caching
 1. create a workflow file called simple-caching.yaml in .github/workflows
 
 ```
-name: Caching Demo
+name: Cache Demo
 on: workflow_dispatch
 
 jobs:
-  cache-demo:
-    runs-on: ubuntu-latest
+  actions-cache:
+    name: Prime demo cache
+    runs-on: ubuntu-24.04
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Cache npm dependencies
+      #  Try to restore existing cache
+      - name: Restore cache
+        id: demo-cache
         uses: actions/cache@v4
         with:
-          path: ~/.npm               # folder to cache
-          key: ${{ runner.os }}-npm-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-npm-
+          path: demo-cache
+          key: demo-cache-v1
 
-      - name: Install dependencies
-        run: npm install
+      # If cache not found, create and populate directory
+      - name: Populate cache directory
+        if: steps.demo-cache.outputs.cache-hit != 'true'
+        run: |
+          echo "Cache miss – generating contents"
+          mkdir -p demo-cache
+          date > demo-cache/timestamp.txt
 
-      - name: Run build
-        run: npm run build
+      #  Save the cache for future runs
+      - name: Save cache
+        if: steps.demo-cache.outputs.cache-hit != 'true'
+        uses: actions/cache@v4
+        with:
+          path: demo-cache
+          key: demo-cache-v1
+
+      #  Show cache status
+      - name: Verify cache status
+        run: |
+          echo "cache-hit? -> ${{ steps.demo-cache.outputs.cache-hit }}"
+          cat demo-cache/timestamp.txt
 ```
 details of the worflow
-* actions/cache saves files or folders (like ~/.npm) between workflow runs.
 
-* key uniquely identifies the cache (based on OS + lock file hash).
+Step 1: The workflow tries to restore a cache folder named demo-cache using the key demo-cache-v1. → First run = cache miss, next runs = cache hit.
 
-* If the same key exists, the cache is restored, skipping fresh installs.
+Step 2: If no cache exists, it creates a folder and writes the current date.
 
-* If not, it installs everything once and saves it for next time.
+Step 3: The new data is saved to cache with the same key (demo-cache-v1).
 
+Step 4: On future runs, the cached data (timestamp) is restored instantly — showing reuse of previous work.
 
 
 
