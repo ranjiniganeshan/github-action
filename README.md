@@ -649,3 +649,85 @@ permissions:
 
 Without this, your script wouldn’t be able to create a PR comment.
 
+
+## Matrix strategies, conditionals, and concurrency controls
+1. create a file matrix-condition-concurrency.yaml in .github/workflows
+
+```
+name: Matrix + Conditional + Concurrency Demo
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  workflow_dispatch:    # allows manual runs
+
+# Concurrency control – only one workflow per branch at a time
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    name: Build & Test (${{ matrix.os }}, Node ${{ matrix.node }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        node: [18, 20]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Dummy build
+        run: echo "Simulating build on ${{ matrix.os }} with Node ${{ matrix.node }}"
+
+      - name: Dummy test
+        run: echo "Simulating tests on ${{ matrix.os }} with Node ${{ matrix.node }}"
+
+  deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    #  Conditional: only deploy from main branch
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy app
+        run: echo " Deploying application from main branch..."
+
+```
+
+#### How It Works
+
+* Matrix Strategy
+
+* build-and-test runs 4 parallel jobs (Ubuntu + Windows × Node 18 + 20).
+
+- Each job prints which OS & Node it is simulating.
+
+* Conditionals
+
+  - deploy runs only if branch is main.
+
+  - Skips on dev or other branches.
+
+* Concurrency Control
+
+  - If multiple pushes happen quickly on the same branch, older runs are cancelled.
+
+* Prevents duplicate deployments.
+
+   - Dummy Steps
+
+   - echo replaces npm install/build/test, so the workflow runs successfully even without a Node project.
